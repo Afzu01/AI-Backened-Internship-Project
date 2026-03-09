@@ -63,13 +63,8 @@ POST /embed
   "text": "agentic workflow with embeddings"
 }
 
-## Interview Talking Points
+## Future Improvements
 
-- Why TF-IDF was selected: fast, interpretable baseline for small and medium catalogs
-- How recommendation scoring works: query vector compared with catalog vectors using cosine similarity
-- Why webhook endpoint exists: supports event-driven orchestration and external tool integration
-- How to improve next: hybrid recommendations, metadata-aware ranking, persistent vector storage
-
-## Notes For Submission
-
-Use docs/resume_bullets.md for resume lines and docs/interview_prep.md for 1-minute, 3-minute, and deep-dive interview answers.
+- Add authentication and rate limiting
+- Add persistent query analytics
+- Add automated tests and CI checks
