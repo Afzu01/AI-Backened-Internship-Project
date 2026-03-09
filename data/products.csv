@@ -1,0 +1,9 @@
+product_id,title,category,tags,rating
+1,FastAPI Masterclass,backend,"python,api,fastapi",4.7
+2,ML Recommendation Basics,ml,"python,ml,sklearn",4.5
+3,n8n Workflow Automation,automation,"n8n,workflow,webhook",4.6
+4,LLM Embeddings in Practice,ai,"llm,embeddings,nlp",4.8
+5,Go for Backend Engineers,backend,"golang,backend,api",4.4
+6,Data Wrangling with Pandas,data,"python,pandas,numpy",4.5
+7,Building REST APIs,backend,"rest,api,design",4.6
+8,Agentic Systems Design,ai,"agents,orchestration,llm",4.7
