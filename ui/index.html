@@ -1,0 +1,326 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AI Backend Demo UI</title>
+  <style>
+    :root {
+      --bg: #040711;
+      --surface: rgba(255, 255, 255, 0.08);
+      --ink: #f3f8ff;
+      --muted: #bfd0e8;
+      --line: rgba(255, 255, 255, 0.2);
+      --brand: #43f3c5;
+      --brand-2: rgba(67, 243, 197, 0.16);
+      --accent: #ffb156;
+      --danger: #ff7d79;
+      --shadow: 0 18px 45px rgba(0, 0, 0, 0.42);
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+      color: var(--ink);
+      background: radial-gradient(circle at 15% 20%, #122443 0%, transparent 34%),
+        radial-gradient(circle at 80% 10%, #152c5e 0%, transparent 35%),
+        radial-gradient(circle at 75% 80%, #1d2f2b 0%, transparent 36%),
+        var(--bg);
+      min-height: 100vh;
+      overflow-x: hidden;
+      position: relative;
+    }
+
+    body::before,
+    body::after {
+      content: "";
+      position: fixed;
+      width: 380px;
+      height: 380px;
+      border-radius: 50%;
+      filter: blur(60px);
+      z-index: 0;
+      opacity: 0.35;
+      animation: drift 10s ease-in-out infinite alternate;
+    }
+
+    body::before {
+      top: -120px;
+      left: -90px;
+      background: #43f3c5;
+    }
+
+    body::after {
+      right: -120px;
+      bottom: -120px;
+      background: #4d8eff;
+      animation-delay: 1.4s;
+    }
+
+    @keyframes drift {
+      from { transform: translateY(0) translateX(0) scale(1); }
+      to { transform: translateY(24px) translateX(18px) scale(1.08); }
+    }
+
+    .wrap {
+      max-width: 1080px;
+      margin: 36px auto;
+      padding: 0 16px 28px;
+      position: relative;
+      z-index: 2;
+      perspective: 1100px;
+    }
+
+    .hero {
+      background: linear-gradient(140deg, rgba(40, 63, 120, 0.8), rgba(28, 102, 121, 0.75));
+      color: white;
+      border-radius: 20px;
+      padding: 26px;
+      box-shadow: var(--shadow);
+      border: 1px solid rgba(255, 255, 255, 0.26);
+      backdrop-filter: blur(10px);
+      transform-style: preserve-3d;
+    }
+
+    .hero h1 {
+      margin: 0 0 8px;
+      font-size: 30px;
+      letter-spacing: 0.4px;
+      text-shadow: 0 4px 14px rgba(0, 0, 0, 0.4);
+    }
+
+    .hero p {
+      margin: 0;
+      color: #dfecff;
+      max-width: 720px;
+      line-height: 1.5;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 16px;
+      margin-top: 18px;
+    }
+
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      padding: 16px;
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(8px);
+      transform-style: preserve-3d;
+      transition: transform 0.22s ease, box-shadow 0.22s ease, border-color 0.22s ease;
+      animation: rise 0.45s ease;
+    }
+
+    .card:hover {
+      border-color: rgba(67, 243, 197, 0.45);
+      box-shadow: 0 24px 46px rgba(0, 0, 0, 0.45);
+    }
+
+    @keyframes rise {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    h2 {
+      margin: 0 0 10px;
+      font-size: 18px;
+      color: #f5fbff;
+    }
+
+    label {
+      display: block;
+      margin: 8px 0 5px;
+      font-size: 13px;
+      color: var(--muted);
+      font-weight: 600;
+    }
+
+    input, textarea {
+      width: 100%;
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      padding: 10px 12px;
+      font-size: 14px;
+      background: rgba(255, 255, 255, 0.92);
+      color: #1a2640;
+    }
+
+    textarea { min-height: 92px; resize: vertical; }
+
+    .row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+
+    button {
+      margin-top: 12px;
+      border: 0;
+      border-radius: 10px;
+      padding: 10px 14px;
+      font-weight: 700;
+      font-size: 14px;
+      background: linear-gradient(120deg, #1fd7a8, #3ca4ff);
+      color: #06213a;
+      cursor: pointer;
+      transition: transform 0.15s ease, opacity 0.15s ease;
+    }
+
+    button:hover { opacity: 0.92; transform: translateY(-1px); }
+
+    .output {
+      margin-top: 12px;
+      background: rgba(5, 15, 31, 0.95);
+      color: #d7f2ea;
+      padding: 10px;
+      border-radius: 10px;
+      min-height: 120px;
+      font-family: Consolas, monospace;
+      font-size: 12px;
+      white-space: pre-wrap;
+      overflow: auto;
+    }
+
+    .quick {
+      margin-top: 16px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      align-items: center;
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    .pill {
+      background: var(--brand-2);
+      border: 1px solid rgba(67, 243, 197, 0.48);
+      color: #a7ffe8;
+      padding: 6px 10px;
+      border-radius: 999px;
+      font-weight: 600;
+    }
+
+    a { color: #0b57d0; text-decoration: none; }
+    a:hover { text-decoration: underline; }
+
+    .error { color: #ffd6d1; }
+  </style>
+</head>
+<body>
+  <main class="wrap">
+    <section class="hero">
+      <h1>AI Backend Demo UI</h1>
+      <p>
+        Hands-on interface for your backend endpoints. Use this page in demos to show recommendation,
+        embeddings preview, and webhook simulation in a cleaner way than raw API docs.
+      </p>
+      <div class="quick">
+        <span class="pill">/recommend</span>
+        <span class="pill">/embed</span>
+        <span class="pill">/webhooks/events</span>
+        <span>Swagger: <a href="/docs" target="_blank" rel="noreferrer">open docs</a></span>
+      </div>
+    </section>
+
+    <section class="grid">
+      <article class="card">
+        <h2>Recommendation</h2>
+        <label for="r-query">Query</label>
+        <input id="r-query" value="python backend api" />
+        <label for="r-topk">Top K</label>
+        <input id="r-topk" type="number" min="1" max="10" value="3" />
+        <button id="btn-recommend">Run /recommend</button>
+        <pre id="out-recommend" class="output">Result will appear here...</pre>
+      </article>
+
+      <article class="card">
+        <h2>Embedding Preview</h2>
+        <label for="e-text">Text</label>
+        <textarea id="e-text">agentic workflow with embeddings</textarea>
+        <button id="btn-embed">Run /embed</button>
+        <pre id="out-embed" class="output">Result will appear here...</pre>
+      </article>
+
+      <article class="card">
+        <h2>Webhook Test</h2>
+        <div class="row">
+          <div>
+            <label for="w-source">Source</label>
+            <input id="w-source" value="n8n" />
+          </div>
+          <div>
+            <label for="w-type">Event Type</label>
+            <input id="w-type" value="order.created" />
+          </div>
+        </div>
+        <label for="w-payload">Payload JSON</label>
+        <textarea id="w-payload">{"order_id":"A101","amount":799}</textarea>
+        <button id="btn-webhook">Run /webhooks/events</button>
+        <pre id="out-webhook" class="output">Result will appear here...</pre>
+      </article>
+    </section>
+  </main>
+
+  <script>
+    function attachTilt(card) {
+      card.addEventListener('mousemove', (e) => {
+        const r = card.getBoundingClientRect();
+        const x = e.clientX - r.left;
+        const y = e.clientY - r.top;
+        const rx = ((y / r.height) - 0.5) * -8;
+        const ry = ((x / r.width) - 0.5) * 10;
+        card.style.transform = `rotateX(${rx}deg) rotateY(${ry}deg) translateY(-2px)`;
+      });
+      card.addEventListener('mouseleave', () => {
+        card.style.transform = 'rotateX(0deg) rotateY(0deg) translateY(0)';
+      });
+    }
+
+    document.querySelectorAll('.card').forEach(attachTilt);
+
+    async function callApi(path, body, outputEl) {
+      outputEl.textContent = 'Loading...';
+      try {
+        const res = await fetch(path, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(body)
+        });
+        const data = await res.json();
+        outputEl.textContent = JSON.stringify(data, null, 2);
+      } catch (err) {
+        outputEl.innerHTML = '<span class="error">' + err.message + '</span>';
+      }
+    }
+
+    document.getElementById('btn-recommend').addEventListener('click', () => {
+      const query = document.getElementById('r-query').value.trim();
+      const top_k = Number(document.getElementById('r-topk').value || 3);
+      callApi('/recommend', { query, top_k }, document.getElementById('out-recommend'));
+    });
+
+    document.getElementById('btn-embed').addEventListener('click', () => {
+      const text = document.getElementById('e-text').value.trim();
+      callApi('/embed', { text }, document.getElementById('out-embed'));
+    });
+
+    document.getElementById('btn-webhook').addEventListener('click', () => {
+      const source = document.getElementById('w-source').value.trim();
+      const event_type = document.getElementById('w-type').value.trim();
+      const out = document.getElementById('out-webhook');
+      try {
+        const payload = JSON.parse(document.getElementById('w-payload').value || '{}');
+        callApi('/webhooks/events', { source, event_type, payload }, out);
+      } catch (e) {
+        out.textContent = 'Invalid JSON in payload';
+      }
+    });
+  </script>
+</body>
+</html>

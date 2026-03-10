@@ -39,16 +39,24 @@ Commands:
 python -m venv .venv
 .\.venv\Scripts\Activate.ps1
 pip install -r requirements.txt
-uvicorn app.main:app --reload
+uvicorn app.main:app --reload --port 8000
 
-Docs URL after startup:
-http://127.0.0.1:8000/docs
+Docs URL after startup (local machine only):
+[http://127.0.0.1:8000/docs](http://127.0.0.1:8000/docs)
 
 ## Endpoints
 
 - POST /recommend
 - POST /embed
 - POST /webhooks/events
+
+## For Recruiters
+
+- Local API docs: http://127.0.0.1:8000/docs
+- Live deployment URL: add after deployment
+- Suggested screenshots:
+  - docs_home.png
+  - recommend_response.png
 
 ## Sample Payloads
 
@@ -61,6 +69,19 @@ POST /recommend
 POST /embed
 {
   "text": "agentic workflow with embeddings"
+}
+
+Sample response from POST /recommend
+{
+  "query": "python api backend",
+  "results": [
+    {
+      "product_id": 1,
+      "title": "FastAPI Masterclass",
+      "category": "backend",
+      "score": 0.73
+    }
+  ]
 }
 
 ## Future Improvements

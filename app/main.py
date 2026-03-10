@@ -1,15 +1,24 @@
+from pathlib import Path
+
 from fastapi import FastAPI
+from fastapi.responses import FileResponse
 
 from app.schemas import EmbedRequest, RecommendRequest, WebhookEvent
 from app.services import CatalogService
 
 app = FastAPI(title="AI Backend Internship Project API", version="1.0.0")
 service = CatalogService()
+UI_FILE = Path(__file__).resolve().parent.parent / "ui" / "index.html"
 
 
 @app.get("/")
 def root() -> dict:
-    return {"message": "API is running", "docs": "/docs"}
+    return {"message": "API is running", "docs": "/docs", "ui": "/ui"}
+
+
+@app.get("/ui")
+def ui() -> FileResponse:
+    return FileResponse(UI_FILE)
 
 
 @app.post("/recommend")
