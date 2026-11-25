@@ -1,91 +1,106 @@
 # AI Backend Internship Project
 
-I built this project to demonstrate three practical backend skills often tested in internships:
+I built this project to practise a few backend patterns that are useful in AI application work: a catalogue recommendation endpoint, text-vector generation, and a webhook-style API route.
 
-1. Building a recommendation endpoint using machine learning basics
-2. Exposing webhook-friendly APIs for workflow tools such as n8n
-3. Creating domain-specific text embeddings for LLM and SLM workflows
+The API is built with FastAPI. The current recommendation and vector logic uses scikit-learn's TF-IDF vectorizer and cosine similarity; it does not use a transformer embedding model.
 
-## What This Project Does
+## What is implemented
 
-- Accepts a user query and returns relevant catalog items using TF-IDF + cosine similarity
-- Accepts text and returns a vector representation suitable for downstream retrieval experiments
-- Accepts webhook event payloads for event-driven integration patterns
+- `POST /recommend` — ranks catalogue items against a text query.
+- `POST /embed` — returns the TF-IDF vector dimensions and the first 10 values.
+- `POST /webhooks/events` — accepts an event payload and returns its source, event type, and payload keys.
+- `GET /ui` — serves the browser interface.
+- `GET /` — returns basic API information.
 
-## Tech Stack
+The recommendation data is loaded from `data/products.csv`. The service combines each product's title, category, and tags before fitting the TF-IDF vectorizer.
+
+## Technology
 
 - Python
-- FastAPI
-- Pandas, NumPy
-- Scikit-learn
-- n8n compatible webhook flow
+- FastAPI and Pydantic
+- pandas and NumPy
+- scikit-learn
+- TF-IDF and cosine similarity
 
-## Structure
+## Project structure
 
-- app/main.py: FastAPI routes and app setup
-- app/services.py: recommendation and embedding logic
-- app/schemas.py: request models
-- data/products.csv: sample domain dataset
-- workflows/n8n_webhook_recommendation.json: example n8n flow
+```text
+AI-Backened-Internship-Project/
+├── app/
+│   ├── main.py
+│   ├── schemas.py
+│   └── services.py
+├── data/
+│   └── products.csv
+├── ui/
+│   └── index.html
+├── requirements.txt
+└── README.md
+```
 
-## Run Locally
+## Run locally
 
-1. Create and activate a virtual environment
-2. Install dependencies from requirements.txt
-3. Start the API with uvicorn
+On Windows PowerShell:
 
-Commands:
-
+```powershell
 python -m venv .venv
 .\.venv\Scripts\Activate.ps1
-pip install -r requirements.txt
+python -m pip install -r requirements.txt
 uvicorn app.main:app --reload --port 8000
+```
 
-Docs URL after startup (local machine only):
-[http://127.0.0.1:8000/docs](http://127.0.0.1:8000/docs)
+Then open:
 
-## Endpoints
+- API documentation: http://127.0.0.1:8000/docs
+- Browser interface: http://127.0.0.1:8000/ui
 
-- POST /recommend
-- POST /embed
-- POST /webhooks/events
+These addresses are local to the machine running the API.
 
-## For Recruiters
+## Example requests
 
-- Local API docs: http://127.0.0.1:8000/docs
-- Live deployment URL: add after deployment
-- Suggested screenshots:
-  - docs_home.png
-  - recommend_response.png
+`POST /recommend`
 
-## Sample Payloads
-
-POST /recommend
+```json
 {
   "query": "python api backend",
   "top_k": 3
 }
+```
 
-POST /embed
+`POST /embed`
+
+```json
 {
-  "text": "agentic workflow with embeddings"
+  "text": "agentic workflow with text retrieval"
 }
+```
 
-Sample response from POST /recommend
+`POST /webhooks/events`
+
+```json
 {
-  "query": "python api backend",
-  "results": [
-    {
-      "product_id": 1,
-      "title": "FastAPI Masterclass",
-      "category": "backend",
-      "score": 0.73
-    }
-  ]
+  "source": "n8n",
+  "event_type": "order.created",
+  "payload": {
+    "order_id": 123
+  }
 }
+```
 
-## Future Improvements
+## Current limitations
 
-- Add authentication and rate limiting
-- Add persistent query analytics
-- Add automated tests and CI checks
+- Recommendation is based on TF-IDF lexical features, not contextual transformer embeddings.
+- The webhook route acknowledges the received event; it does not currently trigger an external workflow.
+- The API uses the sample CSV catalogue.
+- I have not recorded automated test results or a live deployment for this repository.
+
+## Possible next steps
+
+- Add tests for the API routes and recommendation logic.
+- Add persistent event handling if the webhook flow needs to trigger downstream work.
+- Evaluate retrieval quality against a small set of labelled queries.
+- Consider a transformer-based embedding model as a separate retrieval experiment.
+
+## Author
+
+**Afzal Hussain** · [@Afzu01](https://github.com/Afzu01)
